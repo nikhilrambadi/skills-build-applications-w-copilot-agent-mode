@@ -3,14 +3,17 @@ import { apiBaseUrl, normalizeCollection } from '../api.js'
 
 function Leaderboard() {
   const endpoint = '/api/leaderboard/'
+  const apiEndpoint = import.meta.env.VITE_CODESPACE_NAME
+    ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/leaderboard/`
+    : `${apiBaseUrl}${endpoint}`
   const [state, setState] = useState({ data: [], loading: true, error: '' })
 
   useEffect(() => {
-    fetch(`${apiBaseUrl}/api/leaderboard/`)
+    fetch(apiEndpoint)
       .then((response) => response.ok ? response.json() : Promise.reject(new Error(`Unable to load ${endpoint}`)))
       .then((payload) => setState({ data: normalizeCollection(payload), loading: false, error: '' }))
       .catch((error) => setState({ data: [], loading: false, error: error.message }))
-  }, [])
+  }, [apiEndpoint])
 
   const { data, loading, error } = state
   const ranked = [...data].sort((first, second) => (second.score ?? second.points ?? 0) - (first.score ?? first.points ?? 0))

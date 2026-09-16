@@ -3,14 +3,17 @@ import { apiBaseUrl, normalizeCollection } from '../api.js'
 
 function Workouts() {
   const endpoint = '/api/workouts/'
+  const apiEndpoint = import.meta.env.VITE_CODESPACE_NAME
+    ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev/api/workouts/`
+    : `${apiBaseUrl}${endpoint}`
   const [state, setState] = useState({ data: [], loading: true, error: '' })
 
   useEffect(() => {
-    fetch(`${apiBaseUrl}/api/workouts/`)
+    fetch(apiEndpoint)
       .then((response) => response.ok ? response.json() : Promise.reject(new Error(`Unable to load ${endpoint}`)))
       .then((payload) => setState({ data: normalizeCollection(payload), loading: false, error: '' }))
       .catch((error) => setState({ data: [], loading: false, error: error.message }))
-  }, [])
+  }, [apiEndpoint])
 
   const { data, loading, error } = state
 
