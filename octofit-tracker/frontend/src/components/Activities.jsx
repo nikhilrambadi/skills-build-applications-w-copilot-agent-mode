@@ -1,7 +1,8 @@
 import { useCollection } from '../api.js'
 
 function Activities() {
-  const { data, loading, error } = useCollection('activities')
+  const endpoint = '/api/activities/'
+  const { data, loading, error } = useCollection(endpoint)
 
   return (
     <ResourcePage eyebrow="Movement log" title="Activities" count={data.length} loading={loading} error={error}>

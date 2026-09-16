@@ -6,11 +6,11 @@ export const apiBaseUrl = codespaceName
   ? `https://${codespaceName}-8000.app.github.dev`
   : 'http://localhost:8000'
 
-export async function fetchCollection(resource) {
-  const response = await fetch(`${apiBaseUrl}/api/${resource}/`)
+export async function fetchCollection(endpoint) {
+  const response = await fetch(`${apiBaseUrl}${endpoint}`)
 
   if (!response.ok) {
-    throw new Error(`Unable to load ${resource} (${response.status})`)
+    throw new Error(`Unable to load ${endpoint} (${response.status})`)
   }
 
   const payload = await response.json()
@@ -22,18 +22,18 @@ export async function fetchCollection(resource) {
   return []
 }
 
-export function useCollection(resource) {
+export function useCollection(endpoint) {
   const [state, setState] = useState({ data: [], loading: true, error: '' })
 
   useEffect(() => {
     let active = true
-    fetchCollection(resource)
+    fetchCollection(endpoint)
       .then((data) => active && setState({ data, loading: false, error: '' }))
       .catch((error) => active && setState({ data: [], loading: false, error: error.message }))
     return () => {
       active = false
     }
-  }, [resource])
+  }, [endpoint])
 
   return state
 }

@@ -1,7 +1,8 @@
 import { useCollection } from '../api.js'
 
 function Teams() {
-  const { data, loading, error } = useCollection('teams')
+  const endpoint = '/api/teams/'
+  const { data, loading, error } = useCollection(endpoint)
 
   return <ResourcePage eyebrow="Together is faster" title="Teams" count={data.length} loading={loading} error={error}><div className="team-grid">{data.map((team) => <article className="team-card" key={team._id || team.id || team.name}><div className="team-mark">{(team.name || '?').slice(0, 2).toUpperCase()}</div><h2>{team.name || 'Unnamed team'}</h2><p>{team.description || 'No description yet.'}</p><footer><span>Team points</span><strong>{team.points ?? 0}</strong></footer></article>)}</div></ResourcePage>
 }

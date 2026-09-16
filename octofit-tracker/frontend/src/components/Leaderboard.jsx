@@ -1,7 +1,8 @@
 import { useCollection } from '../api.js'
 
 function Leaderboard() {
-  const { data, loading, error } = useCollection('leaderboard')
+  const endpoint = '/api/leaderboard/'
+  const { data, loading, error } = useCollection(endpoint)
   const ranked = [...data].sort((first, second) => (second.score ?? second.points ?? 0) - (first.score ?? first.points ?? 0))
 
   return (
