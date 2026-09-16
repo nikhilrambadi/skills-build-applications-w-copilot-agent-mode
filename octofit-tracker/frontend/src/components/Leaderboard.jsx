@@ -1,8 +1,18 @@
-import { useCollection } from '../api.js'
+import { useEffect, useState } from 'react'
+import { apiBaseUrl, normalizeCollection } from '../api.js'
 
 function Leaderboard() {
   const endpoint = '/api/leaderboard/'
-  const { data, loading, error } = useCollection(endpoint)
+  const [state, setState] = useState({ data: [], loading: true, error: '' })
+
+  useEffect(() => {
+    fetch(`${apiBaseUrl}/api/leaderboard/`)
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error(`Unable to load ${endpoint}`)))
+      .then((payload) => setState({ data: normalizeCollection(payload), loading: false, error: '' }))
+      .catch((error) => setState({ data: [], loading: false, error: error.message }))
+  }, [])
+
+  const { data, loading, error } = state
   const ranked = [...data].sort((first, second) => (second.score ?? second.points ?? 0) - (first.score ?? first.points ?? 0))
 
   return (

@@ -1,8 +1,18 @@
-import { useCollection } from '../api.js'
+import { useEffect, useState } from 'react'
+import { apiBaseUrl, normalizeCollection } from '../api.js'
 
 function Activities() {
   const endpoint = '/api/activities/'
-  const { data, loading, error } = useCollection(endpoint)
+  const [state, setState] = useState({ data: [], loading: true, error: '' })
+
+  useEffect(() => {
+    fetch(`${apiBaseUrl}/api/activities/`)
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error(`Unable to load ${endpoint}`)))
+      .then((payload) => setState({ data: normalizeCollection(payload), loading: false, error: '' }))
+      .catch((error) => setState({ data: [], loading: false, error: error.message }))
+  }, [])
+
+  const { data, loading, error } = state
 
   return (
     <ResourcePage eyebrow="Movement log" title="Activities" count={data.length} loading={loading} error={error}>
